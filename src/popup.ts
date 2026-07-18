@@ -91,12 +91,7 @@ function getActiveTab(): Promise<{ id?: number; url?: string; title?: string } |
 }
 
 function isSupportedPage(url: string): boolean {
-  return (
-    url.startsWith("http://") ||
-    url.startsWith("https://") ||
-    url.startsWith("file://") ||
-    url.startsWith("about:")
-  );
+  return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://");
 }
 
 function getUnsupportedPageMessage(url: string | undefined): string {

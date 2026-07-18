@@ -8,26 +8,11 @@
     "default_title": "FindNav",
     "default_popup": "popup.html"
   },
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
-  "commands": {
-    "open-findnav": {
-      "suggested_key": {
-        "default": "Alt+Shift+F",
-        "mac": "Alt+Shift+F"
-      },
-      "description": "Open FindNav"
-    }
-  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["content.css"],
-      "all_frames": true,
-      "match_about_blank": true,
       "run_at": "document_start"
     }
   ]

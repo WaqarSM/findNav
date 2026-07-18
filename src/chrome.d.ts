@@ -1,9 +1,4 @@
 type FindNavChromeApi = {
-  commands: {
-    onCommand: {
-      addListener(callback: (command: string) => void): void;
-    };
-  };
   tabs: {
     query(
       queryInfo: { active: boolean; currentWindow: boolean },

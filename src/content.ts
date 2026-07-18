@@ -24,6 +24,7 @@ type Overlay = {
 
 const CONTENT_DEBUG = false;
 const ROOT_ID = "findnav-root";
+const HIDDEN_CLASS = "findnav-hidden";
 const CURRENT_ACTION_CLASS = "findnav-action-current";
 const MATCH_HIGHLIGHT_NAME = "findnav-match";
 const CURRENT_HIGHLIGHT_NAME = "findnav-current";
@@ -39,6 +40,79 @@ const ACTION_SELECTOR = [
   "[onclick]",
   "[tabindex]",
 ].join(",");
+const OVERLAY_STYLE = `
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .findnav-panel {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    box-shadow: 0 2px 9px rgba(60, 64, 67, 0.24);
+    color: #202124;
+    display: flex;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    gap: 4px;
+    min-height: 34px;
+    padding: 4px;
+    width: min(390px, calc(100vw - 32px));
+  }
+
+  .findnav-input {
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: #202124;
+    flex: 1 1 auto;
+    font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    height: 24px;
+    min-width: 96px;
+    outline: none;
+    padding: 3px 7px;
+  }
+
+  .findnav-input:focus {
+    border-color: #8ab4f8;
+  }
+
+  .findnav-count {
+    color: #5f6368;
+    flex: 0 0 auto;
+    font: 12px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-width: 44px;
+    text-align: right;
+  }
+
+  .findnav-button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    color: #3c4043;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 24px;
+    font: 16px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    height: 24px;
+    justify-content: center;
+    padding: 0;
+    width: 24px;
+  }
+
+  .findnav-button:hover,
+  .findnav-button:focus {
+    background: #f1f3f4;
+    outline: none;
+  }
+
+  .findnav-close {
+    font-size: 18px;
+  }
+`;
 
 let overlay: Overlay | null = null;
 let isOpen = false;
@@ -46,6 +120,7 @@ let matches: Match[] = [];
 let activeIndex = -1;
 let currentActionElement: HTMLElement | null = null;
 let highlightApi = getHighlightApi();
+let previousActiveElement: Element | null = null;
 
 debugContent("content script loaded", window.location.href);
 document.documentElement.dataset.findnavContentScript = "loaded";
@@ -53,6 +128,11 @@ document.documentElement.dataset.findnavContentScript = "loaded";
 function createOverlay(): Overlay {
   const root = document.createElement("div");
   root.id = ROOT_ID;
+  root.className = HIDDEN_CLASS;
+  const shadow = root.attachShadow({ mode: "open" });
+
+  const style = document.createElement("style");
+  style.textContent = OVERLAY_STYLE;
 
   const panel = document.createElement("div");
   panel.className = "findnav-panel";
@@ -74,36 +154,35 @@ function createOverlay(): Overlay {
   const next = makeButton("findnav-next", "Next match", "›");
   const close = makeButton("findnav-close", "Close FindNav", "×");
 
+  shadow.append(style, panel);
   panel.append(input, count, previous, next, close);
-  root.append(panel);
   document.documentElement.append(root);
 
   input.addEventListener("input", () => {
     runSearch(input.value);
   });
 
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      moveActive(event.shiftKey ? -1 : 1);
-      return;
-    }
+  panel.addEventListener("pointerdown", stopOverlayEvent);
+  panel.addEventListener("click", stopOverlayEvent);
+  panel.addEventListener("keydown", stopOverlayEvent);
 
-    if (event.key === "Enter") {
-      event.preventDefault();
-      activateCurrent();
-      return;
-    }
-
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeOverlay();
-    }
+  previous.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    moveActive(-1);
+    focusOverlayInput();
   });
-
-  previous.addEventListener("click", () => moveActive(-1));
-  next.addEventListener("click", () => moveActive(1));
-  close.addEventListener("click", closeOverlay);
+  next.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    moveActive(1);
+    focusOverlayInput();
+  });
+  close.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    closeOverlay({ restoreFocus: true });
+  });
 
   return { root, input, count };
 }
@@ -121,9 +200,13 @@ function makeButton(className: string, label: string, text: string): HTMLButtonE
 function openOverlay(): void {
   debugContent("open requested");
 
+  if (!isOpen) {
+    previousActiveElement = document.activeElement;
+  }
+
   overlay ??= createOverlay();
-  overlay.root.hidden = false;
   isOpen = true;
+  overlay.root.classList.remove(HIDDEN_CLASS);
   focusOverlayInput();
   if (overlay.input.value) {
     runSearch(overlay.input.value);
@@ -150,16 +233,22 @@ function focusOverlayInput(): void {
   window.setTimeout(focus, 180);
 }
 
-function closeOverlay(): void {
+function closeOverlay(options: { restoreFocus?: boolean } = {}): void {
   if (!overlay) {
     return;
   }
 
   isOpen = false;
-  overlay.root.hidden = true;
+  overlay.root.classList.add(HIDDEN_CLASS);
   overlay.input.value = "";
   clearMatches();
   overlay.count.textContent = "0/0";
+
+  if (options.restoreFocus && previousActiveElement instanceof HTMLElement && previousActiveElement.isConnected) {
+    previousActiveElement.focus({ preventScroll: true });
+  }
+
+  previousActiveElement = null;
 }
 
 function runSearch(nextQuery: string): void {
@@ -498,9 +587,11 @@ function activateCurrent(): void {
   current.element.focus({ preventScroll: true });
 
   if (current.kind === "field") {
+    closeOverlay({ restoreFocus: false });
     return;
   }
 
+  closeOverlay({ restoreFocus: false });
   current.element.click();
 }
 
@@ -624,25 +715,61 @@ function getHighlightApi(): FindNavHighlightRegistry | null {
 }
 
 function isOpenShortcut(event: KeyboardEvent): boolean {
-  return event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.key.toLocaleLowerCase() === "f";
+  return event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLocaleLowerCase() === "s";
+}
+
+function isEditableEventTarget(event: KeyboardEvent): boolean {
+  for (const item of event.composedPath()) {
+    if (!(item instanceof HTMLElement)) {
+      continue;
+    }
+
+    if (item.closest("input, textarea, select, [contenteditable=''], [contenteditable='true']")) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function stopOverlayEvent(event: Event): void {
+  event.stopPropagation();
 }
 
 document.addEventListener(
   "keydown",
   (event) => {
-    if (isOpen && event.key === "Escape") {
-      event.preventDefault();
-      event.stopPropagation();
-      closeOverlay();
-      return;
+    if (isOpen) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeOverlay({ restoreFocus: true });
+        return;
+      }
+
+      if (event.key === "Tab") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        moveActive(event.shiftKey ? -1 : 1);
+        focusOverlayInput();
+        return;
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        activateCurrent();
+        return;
+      }
+
     }
 
-    if (!isOpenShortcut(event)) {
+    if (!isOpenShortcut(event) || isEditableEventTarget(event)) {
       return;
     }
 
     event.preventDefault();
-    event.stopPropagation();
+    event.stopImmediatePropagation();
     debugContent("keyboard shortcut detected");
     openOverlay();
   },
