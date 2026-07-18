@@ -3,7 +3,18 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
-const requiredFiles = ["manifest.json", "content.js", "content.css", "popup.html", "popup.js", "popup.css"];
+const requiredFiles = [
+  "manifest.json",
+  "content.js",
+  "content.css",
+  "popup.html",
+  "popup.js",
+  "popup.css",
+  "icons/icon-16.png",
+  "icons/icon-32.png",
+  "icons/icon-48.png",
+  "icons/icon-128.png",
+];
 const missing = [];
 
 for (const file of requiredFiles) {

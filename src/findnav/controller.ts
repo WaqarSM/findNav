@@ -76,7 +76,12 @@ export function moveActive(direction: number): void {
 
 export function activateCurrent(): void {
   const current = matches[activeIndex];
-  if (!current || current.type !== "action") {
+  if (!current) {
+    return;
+  }
+
+  if (current.type === "text") {
+    closeOverlay({ restoreFocus: true });
     return;
   }
 

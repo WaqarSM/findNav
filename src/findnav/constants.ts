@@ -4,7 +4,14 @@ export const HIDDEN_CLASS = "findnav-hidden";
 export const CURRENT_ACTION_CLASS = "findnav-action-current";
 export const MATCH_HIGHLIGHT_NAME = "findnav-match";
 export const CURRENT_HIGHLIGHT_NAME = "findnav-current";
-export const SKIPPED_TAGS = new Set(["SCRIPT", "STYLE", "TEMPLATE", "NOSCRIPT", "SVG", "CANVAS"]);
+export const SKIPPED_TAGS = new Set([
+  "SCRIPT",
+  "STYLE",
+  "TEMPLATE",
+  "NOSCRIPT",
+  "SVG",
+  "CANVAS",
+]);
 export const ACTION_SELECTOR = [
   "a[href]",
   "button",

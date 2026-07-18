@@ -47,7 +47,11 @@ export function isSearchableElement(element: HTMLElement): boolean {
   }
 
   const style = window.getComputedStyle(element);
-  if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) {
+  if (
+    style.display === "none" ||
+    style.visibility === "hidden" ||
+    Number(style.opacity) === 0
+  ) {
     return false;
   }
 
@@ -64,7 +68,10 @@ export function isInsideActionable(element: Element): boolean {
 }
 
 function getInputValue(element: HTMLElement): string | null {
-  if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+  if (
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLTextAreaElement
+  ) {
     return element.value;
   }
 

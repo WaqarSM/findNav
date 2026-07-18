@@ -3,10 +3,23 @@
   "name": "FindNav",
   "version": "0.1.0",
   "description": "Find text on a page, prioritize links and controls, and activate matches from the keyboard.",
+  "homepage_url": "https://github.com/WaqarSM/findNav",
   "permissions": ["activeTab"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "action": {
     "default_title": "FindNav",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
   "content_scripts": [
     {
