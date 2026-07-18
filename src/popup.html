@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FindNav</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header>
+        <h1>FindNav</h1>
+        <span id="status-pill" class="pill">Checking</span>
+      </header>
+
+      <dl class="checks">
+        <div>
+          <dt>Active page</dt>
+          <dd id="active-page">Checking...</dd>
+        </div>
+        <div>
+          <dt>Content script</dt>
+          <dd id="content-script">Checking...</dd>
+        </div>
+        <div>
+          <dt>Shortcut</dt>
+          <dd>Option+F / Alt+F</dd>
+        </div>
+      </dl>
+
+      <button id="open-button" type="button">Open FindNav</button>
+      <p id="hint" class="hint"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

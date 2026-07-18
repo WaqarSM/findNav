@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FindNav Demo Page</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+        margin: 0 auto;
+        max-width: 860px;
+        padding: 32px;
+      }
+
+      nav {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      a,
+      button,
+      input {
+        font: inherit;
+      }
+
+      section {
+        margin: 36px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="#news">News</a>
+      <a href="#sports">Sports</a>
+      <a href="#culture">Culture</a>
+      <a href="#login">Login</a>
+    </nav>
+
+    <h1>FindNav Demo</h1>
+    <p>
+      This page has repeated sports text, a login form, buttons, and normal
+      paragraph matches so the extension can be tested without leaving the
+      machine.
+    </p>
+
+    <section id="news">
+      <h2>News</h2>
+      <p>Sports can appear inside plain text before it appears inside a link.</p>
+      <p>Another sports mention lives here as a repeated match.</p>
+    </section>
+
+    <section id="sports">
+      <h2>Sports</h2>
+      <p>Sports coverage, sports analysis, and sports schedules.</p>
+      <button type="button" onclick="document.body.dataset.clicked = 'sports'">
+        Open sports settings
+      </button>
+    </section>
+
+    <section id="login">
+      <h2>Login</h2>
+      <label>
+        Email
+        <input type="email" placeholder="Email address" />
+      </label>
+      <label>
+        Password
+        <input type="password" placeholder="Password" />
+      </label>
+      <button type="button" onclick="document.body.dataset.clicked = 'login'">
+        Login
+      </button>
+    </section>
+
+    <section id="culture">
+      <h2>Culture</h2>
+      <p>Plain text login appears here, but the login controls should win.</p>
+    </section>
+  </body>
+</html>
