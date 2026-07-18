@@ -1,8 +1,8 @@
 #findnav-root {
   all: initial;
   position: fixed;
-  top: 12px;
-  right: 18px;
+  top: 10px;
+  right: 16px;
   z-index: 2147483647;
   color-scheme: light;
   font-family:
@@ -22,14 +22,14 @@
 .findnav-panel {
   align-items: center;
   background: #ffffff;
-  border: 1px solid #c8c8c8;
+  border: 1px solid #dadce0;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 9px rgba(60, 64, 67, 0.24);
   display: flex;
   gap: 4px;
-  min-height: 36px;
+  min-height: 34px;
   padding: 4px;
-  width: min(420px, calc(100vw - 36px));
+  width: min(390px, calc(100vw - 32px));
 }
 
 .findnav-input {
@@ -39,7 +39,7 @@
   color: #202124;
   flex: 1 1 auto;
   font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  height: 26px;
+  height: 24px;
   min-width: 96px;
   outline: none;
   padding: 3px 7px;
@@ -53,7 +53,7 @@
   color: #5f6368;
   flex: 0 0 auto;
   font: 12px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  min-width: 48px;
+  min-width: 44px;
   text-align: right;
 }
 
@@ -65,12 +65,12 @@
   color: #3c4043;
   cursor: pointer;
   display: inline-flex;
-  flex: 0 0 26px;
+  flex: 0 0 24px;
   font: 16px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  height: 26px;
+  height: 24px;
   justify-content: center;
   padding: 0;
-  width: 26px;
+  width: 24px;
 }
 
 .findnav-button:hover,

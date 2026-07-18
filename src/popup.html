@@ -8,28 +8,57 @@
   </head>
   <body>
     <main class="popup">
-      <header>
-        <h1>FindNav</h1>
+      <header class="popup-header">
+        <div>
+          <h1>FindNav</h1>
+          <p class="subtitle">Keyboard page navigation</p>
+        </div>
         <span id="status-pill" class="pill">Checking</span>
       </header>
 
-      <dl class="checks">
+      <section class="status-card" aria-label="Current page status">
         <div>
-          <dt>Active page</dt>
-          <dd id="active-page">Checking...</dd>
+          <p class="label">Current page</p>
+          <p id="active-page" class="page-preview">Checking...</p>
         </div>
         <div>
-          <dt>Content script</dt>
-          <dd id="content-script">Checking...</dd>
+          <p class="label">Extension status</p>
+          <p id="content-script" class="status-text">Checking...</p>
         </div>
-        <div>
-          <dt>Shortcut</dt>
-          <dd>Option+F / Alt+F</dd>
-        </div>
-      </dl>
+      </section>
 
       <button id="open-button" type="button">Open FindNav</button>
       <p id="hint" class="hint"></p>
+
+      <section class="bindings" aria-label="Key bindings">
+        <h2>Key Bindings</h2>
+        <dl>
+          <div>
+            <dt>Opt+Shift+F</dt>
+            <dd>Open FindNav on macOS</dd>
+          </div>
+          <div>
+            <dt>Alt+Shift+F</dt>
+            <dd>Open FindNav on Windows/Linux</dd>
+          </div>
+          <div>
+            <dt>Tab</dt>
+            <dd>Next match</dd>
+          </div>
+          <div>
+            <dt>Shift+Tab</dt>
+            <dd>Previous match</dd>
+          </div>
+          <div>
+            <dt>Enter</dt>
+            <dd>Open link, click button, or focus field</dd>
+          </div>
+          <div>
+            <dt>Esc</dt>
+            <dd>Close FindNav</dd>
+          </div>
+        </dl>
+      </section>
     </main>
     <script src="popup.js"></script>
   </body>

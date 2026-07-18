@@ -15,8 +15,8 @@
   "commands": {
     "open-findnav": {
       "suggested_key": {
-        "default": "Alt+F",
-        "mac": "Alt+F"
+        "default": "Alt+Shift+F",
+        "mac": "Alt+Shift+F"
       },
       "description": "Open FindNav"
     }

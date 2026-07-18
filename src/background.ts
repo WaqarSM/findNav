@@ -1,5 +1,7 @@
+const BACKGROUND_DEBUG = false;
+
 chrome?.commands.onCommand.addListener((command) => {
-  console.log("[FindNav] command received:", command);
+  debugBackground("command received", command);
 
   if (command !== "open-findnav") {
     return;
@@ -7,19 +9,33 @@ chrome?.commands.onCommand.addListener((command) => {
 
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (tab?.id === undefined) {
-      console.warn("[FindNav] no active tab found for command");
+      warnBackground("No active tab found for command.");
       return;
     }
 
-    console.log("[FindNav] sending open message to tab:", tab.id);
-
     chrome?.tabs.sendMessage(tab.id, { type: "findnav:open" }, () => {
       if (chrome?.runtime.lastError) {
-        console.warn("[FindNav] could not open on this page:", chrome.runtime.lastError.message);
+        warnBackground(chrome.runtime.lastError.message);
         return;
       }
 
-      console.log("[FindNav] open message delivered");
+      debugBackground("open message delivered");
     });
   });
 });
+
+function debugBackground(message: string, detail?: unknown): void {
+  if (!BACKGROUND_DEBUG) {
+    return;
+  }
+
+  console.info("[FindNav]", message, detail ?? "");
+}
+
+function warnBackground(message: string): void {
+  if (!BACKGROUND_DEBUG) {
+    return;
+  }
+
+  console.warn("[FindNav]", message);
+}
