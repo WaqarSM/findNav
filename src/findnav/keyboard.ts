@@ -1,9 +1,9 @@
 export function isOpenShortcut(event: KeyboardEvent): boolean {
+  const hasCommandOrCtrl = event.metaKey || event.ctrlKey;
   return (
     event.shiftKey &&
+    hasCommandOrCtrl &&
     !event.altKey &&
-    !event.ctrlKey &&
-    !event.metaKey &&
     event.key.toLocaleLowerCase() === "f"
   );
 }
